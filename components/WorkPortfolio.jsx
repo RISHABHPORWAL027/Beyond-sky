@@ -12,16 +12,22 @@ export default function WorkPortfolio() {
       {/* Header Content */}
       <div className="container">
         <div className="portfolio-header">
-          {/* Heading */}
-          <h2 className="portfolio-title">
+          {/* Master Section Heading */}
+          <h2 className="portfolio-master-title">
             Our Work &amp; <span className="highlight-circle">Portfolio</span>
           </h2>
 
-          {/* Subtitle */}
-          <p className="portfolio-subtitle">
-            Explore our complete archive of investigative aviation documentaries.
-            From high-stakes Boeing vs Airbus dogfights to super-transporter logistics and supersonic engineering — click any documentary to watch directly on our YouTube channel.
-          </p>
+          {/* Differentiated Platform Sub-heading: YouTube */}
+          <div className="portfolio-subheading-wrap">
+            <h3 className="portfolio-subheading-title">
+              Beyond Sky on <span className="highlight-brand-youtube">YouTube</span>
+            </h3>
+
+            {/* Subtitle */}
+            <p className="portfolio-subtitle">
+              Explore our video documentaries, pilot debriefs, and cockpit telemetry chronicles.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -33,24 +39,12 @@ export default function WorkPortfolio() {
       />
 
       {/* Bottom CTA to Channel */}
-      <div className="container" style={{ textAlign: "center", marginTop: "1rem", position: "relative", zIndex: 12 }}>
+      <div className="portfolio-cta-wrapper">
         <a
           href="https://www.youtube.com/@BeyondSky-m5e/videos"
           target="_blank"
           rel="noopener noreferrer"
-          className="btn btn-gold"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "0.75rem",
-            padding: "0.9rem 2.2rem",
-            borderRadius: "9999px",
-            fontWeight: 700,
-            fontSize: "0.95rem",
-            letterSpacing: "0.02em",
-            textDecoration: "none",
-            boxShadow: "0 10px 30px rgba(245, 158, 11, 0.3)",
-          }}
+          className="btn btn-gold portfolio-youtube-cta"
         >
           <span>Subscribe &amp; Watch on YouTube Channel</span>
           <svg

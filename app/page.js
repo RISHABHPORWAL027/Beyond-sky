@@ -6,7 +6,8 @@ import RunwayLoader from "@/components/RunwayLoader";
 import AirlockHero from "@/components/AirlockHero";
 import SterlingGateKineticNav from "@/components/SterlingGateKineticNav";
 import WorkPortfolio from "@/components/WorkPortfolio";
-import Footer from "@/components/Footer";
+import SpotifySection from "@/components/SpotifySection";
+import Contact from "@/components/Contact";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -27,8 +28,9 @@ export default function Home() {
           theme="aviation"
         />
         <WorkPortfolio />
+        <SpotifySection />
+        <Contact />
       </main>
-      <Footer />
     </>
   );
 }

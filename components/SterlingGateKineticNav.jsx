@@ -440,7 +440,7 @@ export default function SterlingGateKineticNav() {
                 </li>
                 <li className="menu-list-item" data-shape="5">
                   <a
-                    href="mailto:beyondsky@intheblackmedia.com"
+                    href="#contact"
                     className="nav-link w-inline-block"
                     onClick={closeMenu}
                   >

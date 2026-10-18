@@ -97,6 +97,17 @@ export default function AirlockHero({
     const section = sectionRef.current;
     if (!video || !section) return;
 
+    // Guarantee that every reload/mount starts at the top hero section
+    if (typeof window !== "undefined") {
+      if ("scrollRestoration" in window.history) {
+        window.history.scrollRestoration = "manual";
+      }
+      if (window.location.hash) {
+        window.history.replaceState(null, "", window.location.pathname);
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+
     const checkMobile = () => {
       const isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
       const isNarrow = window.innerWidth <= 768;
@@ -482,8 +493,23 @@ export default function AirlockHero({
       onVideoReady();
     }
 
+    const onPageShow = (e) => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      target = 0;
+      shown = 0;
+      moved = false;
+      paint(0);
+      if (!reduceMotion) engageLock();
+    };
+    window.addEventListener("pageshow", onPageShow);
+
     if (!reduceMotion) {
-      if (window.scrollY <= section.offsetTop + 1) engageLock();
+      target = 0;
+      shown = 0;
+      moved = false;
+      released = false;
+      paint(0);
+      engageLock();
 
       window.addEventListener("wheel", onWheel, { passive: false });
       window.addEventListener("touchstart", onTouchStart, { passive: true });
@@ -508,6 +534,7 @@ export default function AirlockHero({
       clearTimeout(seekSafetyTimer);
       cancelAnimationFrame(autoAdvanceRaf);
       cancelAnimationFrame(rafId);
+      window.removeEventListener("pageshow", onPageShow);
       video.removeEventListener("loadeddata", onVideoReady);
       video.removeEventListener("loadedmetadata", onVideoReady);
       video.removeEventListener("canplay", onVideoReady);

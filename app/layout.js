@@ -38,15 +38,21 @@ export const metadata = {
   ],
   authors: [{ name: "Beyond Sky & In The Black Media" }],
   icons: {
-    icon: "/assets/company_logo.jpg",
-    apple: "/assets/company_logo.jpg",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
   openGraph: {
     title: "Beyond Sky | Stories From the Skies",
     description: "Engaging aviation narratives, curious historical facts, and aerospace engineering analysis. 39.3K+ Subscribers & 15M+ Views.",
     images: [
       {
-        url: "/assets/cover_photo.jpg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Beyond Sky - Stories From the Skies",
@@ -58,7 +64,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "Beyond Sky | Stories From the Skies",
     description: "Engaging narratives and beautiful presentations making complex aviation subjects accessible and entertaining.",
-    images: ["/assets/cover_photo.jpg"],
+    images: ["/og-image.jpg"],
   },
 };
 
@@ -68,6 +74,18 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${plusJakarta.variable} ${spaceGrotesk.variable} ${caveat.variable}`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+              }
+              window.scrollTo(0, 0);
+            `,
+          }}
+        />
+      </head>
       <body className="theme-dark">
         {/* Background Radar Rings & Grid */}
         <div className="sky-background-grid" aria-hidden="true">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import SpotifyCard from "@/components/ui/SpotifyCard";
 
 export const episodesData = {
   boeing_airbus: {
@@ -146,6 +147,9 @@ export default function Channels({ onSelectEpisode }) {
             Tune in across video and audio streaming networks for comprehensive aviation intelligence.
           </p>
         </div>
+
+        {/* Interactive Spotify Card Component */}
+        <SpotifyCard />
 
         {/* Channel Dual Hubs: YouTube + Spotify */}
         <div className="channel-hubs-grid">

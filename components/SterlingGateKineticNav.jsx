@@ -415,31 +415,35 @@ export default function SterlingGateKineticNav() {
                   </a>
                 </li>
                 <li className="menu-list-item" data-shape="3">
-                  <a href="#about" className="nav-link w-inline-block" onClick={closeMenu}>
-                    <p className="nav-link-text">About Us</p>
-                    <div className="nav-link-hover-bg" />
-                  </a>
-                </li>
-                <li className="menu-list-item" data-shape="3">
-                  <a href="#channels" className="nav-link w-inline-block" onClick={closeMenu}>
-                    <p className="nav-link-text">Channels</p>
+                  <a
+                    href="https://www.youtube.com/@BeyondSky-m5e"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link w-inline-block"
+                    onClick={closeMenu}
+                  >
+                    <p className="nav-link-text">YouTube</p>
                     <div className="nav-link-hover-bg" />
                   </a>
                 </li>
                 <li className="menu-list-item" data-shape="4">
-                  <a href="#team" className="nav-link w-inline-block" onClick={closeMenu}>
-                    <p className="nav-link-text">Crew</p>
+                  <a
+                    href="https://open.spotify.com/show/3QZ7LND8nODC4ZtrIWoH3s"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="nav-link w-inline-block"
+                    onClick={closeMenu}
+                  >
+                    <p className="nav-link-text">Spotify</p>
                     <div className="nav-link-hover-bg" />
                   </a>
                 </li>
                 <li className="menu-list-item" data-shape="5">
-                  <a href="#collaborate" className="nav-link w-inline-block" onClick={closeMenu}>
-                    <p className="nav-link-text">Partner</p>
-                    <div className="nav-link-hover-bg" />
-                  </a>
-                </li>
-                <li className="menu-list-item" data-shape="1">
-                  <a href="#contact" className="nav-link w-inline-block" onClick={closeMenu}>
+                  <a
+                    href="mailto:beyondsky@intheblackmedia.com"
+                    className="nav-link w-inline-block"
+                    onClick={closeMenu}
+                  >
                     <p className="nav-link-text" data-menu-fade>Contact</p>
                     <div className="nav-link-hover-bg" />
                   </a>
@@ -448,13 +452,6 @@ export default function SterlingGateKineticNav() {
 
               {/* Menu Footer & Telemetry Details */}
               <div className="menu-details">
-                <div data-menu-fade className="flight-status-card">
-                  <span className="telemetry-badge">BSK-321 • ACTIVE BROADCAST</span>
-                  <p className="p-small" style={{ marginTop: "0.4rem", color: "var(--text-secondary)" }}>
-                    Curious aviation history, aircraft engineering, and aerospace duopolies.
-                  </p>
-                </div>
-
                 <div data-menu-fade className="menu-inquiries">
                   <span className="eyebrow">Business & Press</span>
                   <a

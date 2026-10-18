@@ -6,19 +6,10 @@ import RunwayLoader from "@/components/RunwayLoader";
 import AirlockHero from "@/components/AirlockHero";
 import SterlingGateKineticNav from "@/components/SterlingGateKineticNav";
 import WorkPortfolio from "@/components/WorkPortfolio";
-import About from "@/components/About";
-import Channels, { episodesData } from "@/components/Channels";
-import Team from "@/components/Team";
-import Collaborate from "@/components/Collaborate";
-import Contact from "@/components/Contact";
-import EpisodeModal from "@/components/EpisodeModal";
 import Footer from "@/components/Footer";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [activeEpisodeKey, setActiveEpisodeKey] = useState(null);
-
-  const selectedEpisode = activeEpisodeKey ? episodesData[activeEpisodeKey] : null;
 
   return (
     <>
@@ -36,17 +27,8 @@ export default function Home() {
           theme="aviation"
         />
         <WorkPortfolio />
-        <About />
-        <Channels onSelectEpisode={(key) => setActiveEpisodeKey(key)} />
-        <Team />
-        <Collaborate />
-        <Contact />
       </main>
       <Footer />
-      <EpisodeModal
-        episode={selectedEpisode}
-        onClose={() => setActiveEpisodeKey(null)}
-      />
     </>
   );
 }

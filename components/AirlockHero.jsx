@@ -223,17 +223,16 @@ export default function AirlockHero({
       if (locked) return;
       locked = true;
       released = false;
-      lockedY = window.scrollY;
+      lockedY = window.scrollY || window.pageYOffset || 0;
 
-      // Only lock body position on desktop mouse wheel; on touch devices, preventDefault preserves natural viewport
-      if (!isMobile) {
-        const b = document.body.style;
-        b.position = "fixed";
-        b.top = `-${lockedY}px`;
-        b.left = "0";
-        b.right = "0";
-        b.width = "100%";
-      }
+      const b = document.body.style;
+      b.position = "fixed";
+      b.top = `-${lockedY}px`;
+      b.left = "0";
+      b.right = "0";
+      b.width = "100%";
+      b.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
     }
 
     function releaseLock() {
@@ -241,15 +240,15 @@ export default function AirlockHero({
       locked = false;
       const y = lockedY;
 
-      if (!isMobile) {
-        const b = document.body.style;
-        b.position = "";
-        b.top = "";
-        b.left = "";
-        b.right = "";
-        b.width = "";
-        window.scrollTo(0, y);
-      }
+      const b = document.body.style;
+      b.position = "";
+      b.top = "";
+      b.left = "";
+      b.right = "";
+      b.width = "";
+      b.overflow = "";
+      document.documentElement.style.overflow = "";
+      window.scrollTo(0, y);
 
       released = true;
       lastY = y;
@@ -311,14 +310,40 @@ export default function AirlockHero({
       autoAdvanceRaf = requestAnimationFrame(stepAuto);
     };
 
+    let videoPrimed = false;
+    const primeVideo = () => {
+      if (videoPrimed || !video) return;
+      videoPrimed = true;
+      try {
+        const p = video.play();
+        if (p && typeof p.then === "function") {
+          p.then(() => {
+            video.pause();
+          }).catch(() => {});
+        }
+      } catch {}
+    };
+
     function consumeNormalized(delta) {
       if (!locked) return false;
       if (target >= 1 && shown > 0.98 && delta > 0) {
         releaseLock();
+        setTimeout(navigateToContent, 50);
         return false;
       }
       target = clamp(target + delta, 0, 1);
       if (target > 0.001) moved = true;
+
+      // Auto-glide to content when reaching end of intro
+      if (target >= 0.96) {
+        target = 1;
+        setTimeout(() => {
+          if (locked) {
+            releaseLock();
+            setTimeout(navigateToContent, 50);
+          }
+        }, 400);
+      }
       return true;
     }
 
@@ -342,6 +367,7 @@ export default function AirlockHero({
 
     const handlePointerDown = (clientY, clientX) => {
       cancelAnimationFrame(autoAdvanceRaf);
+      primeVideo();
       touchStartY = clientY;
       touchStartX = clientX || 0;
       lastTouchY = clientY;
@@ -362,8 +388,8 @@ export default function AirlockHero({
       lastTouchTime = now;
 
       const isSmall = window.innerWidth <= 768;
-      const touchDist = isSmall ? (MOBILE_SCRUB + MOBILE_HOLD) : totalDistance;
-      const touchSensitivity = isSmall ? 2.5 : 1.3;
+      const touchDist = isSmall ? 350 : totalDistance;
+      const touchSensitivity = isSmall ? 2.4 : 1.3;
 
       const normalizedDelta = (deltaY * touchSensitivity) / touchDist;
 
@@ -380,31 +406,32 @@ export default function AirlockHero({
       const gestureDuration = performance.now() - gestureStartTime;
       const totalMove = Math.abs(touchStartY - (clientY !== undefined ? clientY : lastTouchY));
 
-      // Tap detection: quick touch with minimal movement (< 15px within 350ms)
-      if (totalMove < 15 && gestureDuration < 350 && shown < 0.25) {
+      // Tap detection: quick tap with minimal movement (< 20px within 400ms)
+      if (totalMove < 20 && gestureDuration < 400 && shown < 0.5) {
+        primeVideo();
         advanceRef.current();
         return;
       }
 
       // Natural finger flick momentum
-      if (locked && Math.abs(touchVelocity) > 0.18) {
+      if (locked && Math.abs(touchVelocity) > 0.15) {
         const isSmall = window.innerWidth <= 768;
-        const boost = isSmall ? 0.42 : 0.25;
+        const boost = isSmall ? 0.45 : 0.25;
         const direction = touchVelocity > 0 ? 1 : -1;
         const flickPower = Math.min(Math.abs(touchVelocity), 2.5) * boost * direction;
 
         target = clamp(target + flickPower, 0, 1);
         moved = true;
 
-        // If flicked with intention downward near end of intro, glide to 100% and release
-        if (direction > 0 && target >= 0.75) {
+        // If flicked upward with intention near end of intro, glide to 100% and release
+        if (direction > 0 && target >= 0.70) {
           target = 1;
           setTimeout(() => {
-            if (locked && shown > 0.92) {
+            if (locked && shown > 0.90) {
               releaseLock();
-              navigateToContent();
+              setTimeout(navigateToContent, 50);
             }
-          }, 550);
+          }, 450);
         }
       }
     };
@@ -511,13 +538,22 @@ export default function AirlockHero({
       paint(0);
       engageLock();
 
+      const usePointer = typeof window !== "undefined" && "PointerEvent" in window;
+
       window.addEventListener("wheel", onWheel, { passive: false });
-      window.addEventListener("touchstart", onTouchStart, { passive: true });
-      window.addEventListener("touchmove", onTouchMove, { passive: false });
-      window.addEventListener("touchend", onTouchEnd, { passive: true });
-      window.addEventListener("pointerdown", onPointerDown, { passive: true });
-      window.addEventListener("pointermove", onPointerMove, { passive: false });
-      window.addEventListener("pointerup", onPointerUp, { passive: true });
+
+      if (usePointer) {
+        window.addEventListener("pointerdown", onPointerDown, { passive: true });
+        window.addEventListener("pointermove", onPointerMove, { passive: false });
+        window.addEventListener("pointerup", onPointerUp, { passive: true });
+        window.addEventListener("pointercancel", onPointerUp, { passive: true });
+      } else {
+        window.addEventListener("touchstart", onTouchStart, { passive: true });
+        window.addEventListener("touchmove", onTouchMove, { passive: false });
+        window.addEventListener("touchend", onTouchEnd, { passive: true });
+        window.addEventListener("touchcancel", onTouchEnd, { passive: true });
+      }
+
       window.addEventListener("keydown", onKeyDown);
       window.addEventListener("scroll", onScroll, { passive: true });
       window.addEventListener("resize", checkMobile);
@@ -541,12 +577,14 @@ export default function AirlockHero({
       video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("ended", onEnded);
       window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("touchstart", onTouchStart);
-      window.removeEventListener("touchmove", onTouchMove);
-      window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
+      window.removeEventListener("touchend", onTouchEnd);
+      window.removeEventListener("touchcancel", onTouchEnd);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", checkMobile);
